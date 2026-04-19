@@ -25,8 +25,8 @@ jobs:
             echo "MINIO_ROOT_USER=${{ secrets.MINIO_ROOT_USER }}" > .env
             echo "MINIO_ROOT_PASSWORD=${{ secrets.MINIO_ROOT_PASSWORD }}" >> .env
 
-            docker compose down --remove-orphans
-            docker compose up -d
+            docker compose -f docker-compose.yml down --remove-orphans
+            docker compose -f docker-compose.yml up -d
 
             sleep 10
             docker exec minio mc alias set local http://localhost:9000 \
