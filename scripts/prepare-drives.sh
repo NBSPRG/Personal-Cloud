@@ -66,7 +66,7 @@ is_enabled() {
         value="${default_enabled}"
     fi
 
-    [ "${value}" = "true" ]
+    [ "${value}" = "true" ] || [ "${value}" = "READ_ONLY" ] || [ "${value}" = "READ_WRITE" ]
 }
 
 mkdir -p "${cloud_root}"

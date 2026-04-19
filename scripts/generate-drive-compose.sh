@@ -60,7 +60,23 @@ is_enabled() {
         value="${default_enabled}"
     fi
 
-    [ "${value}" = "true" ]
+    [ "${value}" = "true" ] || [ "${value}" = "READ_ONLY" ] || [ "${value}" = "READ_WRITE" ]
+}
+
+resolve_mode() {
+    local configured_mode="$1"
+    local mode_env="$2"
+    local value=""
+
+    if [ -n "${mode_env}" ]; then
+        value="$(env_value "${mode_env}")"
+    fi
+
+    case "${value}" in
+        READ_ONLY) echo "ro" ;;
+        READ_WRITE) echo "rw" ;;
+        *) echo "${configured_mode}" ;;
+    esac
 }
 
 enabled_count=0
@@ -78,6 +94,7 @@ while IFS= read -r drive; do
     host_path="$(jq -r '.host_path' <<<"${drive}")"
     browser_path="$(jq -r '.browser_path' <<<"${drive}")"
     mode="$(jq -r '.mode // "rw"' <<<"${drive}")"
+    mode_env="$(jq -r '.mode_env // ""' <<<"${drive}")"
     enabled_env="$(jq -r '.enabled_env // ""' <<<"${drive}")"
     default_enabled="$(jq -r '.default_enabled // false' <<<"${drive}")"
     marker="$(jq -r '.marker // ""' <<<"${drive}")"
@@ -87,6 +104,7 @@ while IFS= read -r drive; do
     fi
 
     enabled_count=$((enabled_count + 1))
+    mode="$(resolve_mode "${mode}" "${mode_env}")"
 
     if [ "${mode}" = "ro" ]; then
         echo "      - ${host_path}:${browser_path}:ro" >> "${output_file}"

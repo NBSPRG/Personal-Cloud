@@ -27,11 +27,24 @@
       "rclone_remote": "gdrive2"
     },
     {
-      "name": "vm-readonly",
+      "name": "drive3",
+      "host_path": "/mnt/drive3",
+      "browser_path": "/cloud/drive3",
+      "mode": "rw",
+      "enabled_env": "DRIVE3_ENABLED",
+      "default_enabled": false,
+      "required": false,
+      "marker": "/mnt/drive3/.rclone-mounted",
+      "kind": "rclone",
+      "rclone_remote": "gdrive3"
+    },
+    {
+      "name": "vm-space",
       "host_path": "/mnt/vm-storage",
-      "browser_path": "/cloud/vm-readonly",
+      "browser_path": "/cloud/vm-space",
       "mode": "ro",
-      "enabled_env": "VM_STORAGE_READONLY_MODE",
+      "mode_env": "VM_SPACE",
+      "enabled_env": "VM_SPACE",
       "default_enabled": false,
       "required": false,
       "kind": "local"

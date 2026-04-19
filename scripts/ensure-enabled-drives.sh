@@ -57,7 +57,7 @@ is_enabled() {
         value="${default_enabled}"
     fi
 
-    [ "${value}" = "true" ]
+    [ "${value}" = "true" ] || [ "${value}" = "READ_ONLY" ] || [ "${value}" = "READ_WRITE" ]
 }
 
 while IFS= read -r drive; do
