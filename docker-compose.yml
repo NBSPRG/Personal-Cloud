@@ -11,7 +11,12 @@ services:
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
     volumes:
       - /mnt/drive1/minio-data:/data
-    command: server /data --console-address ":9001"
+      - /mnt/drive1/.rclone-mounted:/mnt-check/.rclone-mounted:ro
+    entrypoint:
+      - /bin/sh
+      - -c
+    command:
+      - test -f /mnt-check/.rclone-mounted && minio server /data --console-address ":9001"
     healthcheck:
       test: ["CMD", "mc", "ready", "local"]
       interval: 30s
@@ -28,10 +33,16 @@ services:
     volumes:
       - /mnt/drive1:/srv
       - filebrowser-db:/database
+      - /mnt/drive1/.rclone-mounted:/mnt-check/.rclone-mounted:ro
     environment:
       - FB_DATABASE=/database/filebrowser.db
       - FB_ROOT=/srv
       - FB_LOG=stdout
+    entrypoint:
+      - /bin/sh
+      - -c
+    command:
+      - test -f /mnt-check/.rclone-mounted && filebrowser
 
 volumes:
   filebrowser-db:

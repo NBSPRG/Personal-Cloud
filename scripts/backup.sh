@@ -7,6 +7,14 @@ DATE_STAMP=$(date "+%Y-%m-%d")
 DRIVE1="gdrive1"
 DRIVE2="gdrive2"
 PROJECT_DIR="/opt/personal-cloud"
+DRIVE2_NORMAL_MODE="${DRIVE2_NORMAL_MODE:-false}"
+
+if [ -f "${PROJECT_DIR}/.env" ]; then
+    # Load deployment flags such as DRIVE2_NORMAL_MODE for cron runs.
+    set -a
+    . "${PROJECT_DIR}/.env"
+    set +a
+fi
 
 log() { echo "[$(date '+%Y-%m-%d %H:%M:%S')] $*" | tee -a "$LOG_FILE"; }
 
@@ -20,6 +28,11 @@ daily_backup() {
 }
 
 weekly_sync() {
+    if [ "${DRIVE2_NORMAL_MODE}" = "true" ]; then
+        log "Skipping weekly drive2 sync because DRIVE2_NORMAL_MODE=true"
+        return 0
+    fi
+
     log "=== WEEKLY SYNC ==="
     rclone sync "${DRIVE1}:minio-data" "${DRIVE2}:redundancy/minio-mirror" --transfers 4 --checkers 8 --log-file "$LOG_FILE" --log-level INFO 2>&1 || true
     rclone sync "${DRIVE1}:backups" "${DRIVE2}:redundancy/backups-mirror" --transfers 4 --log-file "$LOG_FILE" --log-level INFO 2>&1 || true

@@ -1,0 +1,11 @@
+services:
+  filebrowser:
+    volumes:
+      - /mnt/drive1:/cloud/drive1
+      - /mnt/drive2:/cloud/drive2
+      - /mnt/drive2/.rclone-mounted:/mnt-check/drive2/.rclone-mounted:ro
+    environment:
+      - FB_ROOT=/cloud
+      - DRIVE2_NORMAL_MODE=true
+    command:
+      - test -f /mnt-check/.rclone-mounted && test -f /mnt-check/drive2/.rclone-mounted && filebrowser

@@ -24,9 +24,15 @@ jobs:
 
             echo "MINIO_ROOT_USER=${{ secrets.MINIO_ROOT_USER }}" > .env
             echo "MINIO_ROOT_PASSWORD=${{ secrets.MINIO_ROOT_PASSWORD }}" >> .env
+            echo "DRIVE2_NORMAL_MODE=${{ secrets.DRIVE2_NORMAL_MODE }}" >> .env
 
-            docker compose -f docker-compose.yml down --remove-orphans
-            docker compose -f docker-compose.yml up -d
+            COMPOSE_FILES="-f docker-compose.yml"
+            if [ "${{ secrets.DRIVE2_NORMAL_MODE }}" = "true" ]; then
+              COMPOSE_FILES="$COMPOSE_FILES -f docker-compose.drive2.yml"
+            fi
+
+            docker compose $COMPOSE_FILES down --remove-orphans
+            docker compose $COMPOSE_FILES up -d
 
             sleep 10
             docker exec minio mc alias set local http://localhost:9000 \

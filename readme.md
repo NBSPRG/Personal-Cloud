@@ -203,6 +203,39 @@ Google Drive Account 2 (Cold — /mnt/drive2)
 └── redundancy/        ← mirror of drive1 critical data
 ```
 
+### Drive 2 Mode
+
+By default, Drive 2 is backup-only:
+
+```env
+DRIVE2_NORMAL_MODE=false
+```
+
+In this mode, FileBrowser shows Drive 1, and the weekly backup job can sync
+important Drive 1 data into `gdrive2:redundancy`.
+
+To use Drive 2 as normal browsable storage, set this GitHub Actions secret:
+
+```text
+DRIVE2_NORMAL_MODE=true
+```
+
+When enabled, deployment adds `docker-compose.drive2.yml`, FileBrowser root
+changes to `/cloud`, and the UI shows:
+
+```text
+drive1/
+drive2/
+```
+
+The weekly Drive 1 to Drive 2 mirror is skipped while normal mode is enabled.
+Before enabling it, make sure both mount marker files exist on the VM:
+
+```bash
+sudo touch /mnt/drive1/.rclone-mounted
+sudo touch /mnt/drive2/.rclone-mounted
+```
+
 ---
 
 ## S3 API Usage (After Setup)
