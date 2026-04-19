@@ -222,7 +222,6 @@ Current flags:
 ENABLED_DRIVES=
 DRIVE1_ENABLED=true
 DRIVE2_NORMAL_MODE=false
-VM_SPACE=
 ```
 
 For new drives, prefer the scalable GitHub Actions secret:
@@ -250,18 +249,6 @@ drive2/
 
 When Drive 2 normal mode is enabled, the weekly Drive 1 to Drive 2 mirror is
 skipped so normal Drive 2 files are not overwritten.
-
-With `VM_SPACE=READ_ONLY`, FileBrowser also shows:
-
-```text
-vm-space/
-```
-
-That maps to `/mnt/vm-storage` as read-only. FileBrowser can download files
-from it, but cannot upload into it.
-
-With `VM_SPACE=READ_WRITE`, the same `vm-space/` folder is writable. Leave
-`VM_SPACE` empty to hide VM disk space from FileBrowser.
 
 #### Add A New Google Drive
 

@@ -27,10 +27,10 @@ jobs:
             echo "ENABLED_DRIVES=${{ secrets.ENABLED_DRIVES }}" >> .env
             echo "DRIVE1_ENABLED=${{ secrets.DRIVE1_ENABLED }}" >> .env
             echo "DRIVE2_NORMAL_MODE=${{ secrets.DRIVE2_NORMAL_MODE }}" >> .env
-            echo "VM_SPACE=${{ secrets.VM_SPACE }}" >> .env
 
             sudo PROJECT_DIR=/opt/personal-cloud bash scripts/ensure-enabled-drives.sh
             sudo PROJECT_DIR=/opt/personal-cloud bash scripts/prepare-drives.sh
+            sudo rmdir /mnt/cloud-root/vm-readonly /mnt/cloud-root/vm-space 2>/dev/null || true
             PROJECT_DIR=/opt/personal-cloud bash scripts/generate-drive-compose.sh
 
             COMPOSE_FILES="-f docker-compose.yml -f docker-compose.generated-drives.yml"

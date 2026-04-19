@@ -37,17 +37,6 @@
       "marker": "/mnt/drive3/.rclone-mounted",
       "kind": "rclone",
       "rclone_remote": "gdrive3"
-    },
-    {
-      "name": "vm-space",
-      "host_path": "/mnt/vm-storage",
-      "browser_path": "/cloud/vm-space",
-      "mode": "ro",
-      "mode_env": "VM_SPACE",
-      "enabled_env": "VM_SPACE",
-      "default_enabled": false,
-      "required": false,
-      "kind": "local"
     }
   ]
 }

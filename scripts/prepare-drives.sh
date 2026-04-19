@@ -66,7 +66,7 @@ is_enabled() {
         value="${default_enabled}"
     fi
 
-    [ "${value}" = "true" ] || [ "${value}" = "READ_ONLY" ] || [ "${value}" = "READ_WRITE" ]
+    [ "${value}" = "true" ]
 }
 
 mkdir -p "${cloud_root}"
@@ -81,13 +81,12 @@ while IFS= read -r drive; do
     browser_path="$(jq -r '.browser_path' <<<"${drive}")"
     cloud_name="${browser_path##*/}"
 
-    mkdir -p "${cloud_root}/${cloud_name}"
-    chmod 555 "${cloud_root}/${cloud_name}"
-
     if ! is_enabled "${name}" "${enabled_env}" "${default_enabled}"; then
         continue
     fi
 
+    mkdir -p "${cloud_root}/${cloud_name}"
+    chmod 555 "${cloud_root}/${cloud_name}"
     mkdir -p "${host_path}"
 
     if [ "${SKIP_MARKER_CHECK}" = "false" ] && [ -n "${marker}" ] && [ ! -e "${marker}" ]; then

@@ -5,7 +5,6 @@ PROJECT_DIR="/opt/personal-cloud"
 MOUNT_DRIVE1="/mnt/drive1"
 MOUNT_DRIVE2="/mnt/drive2"
 CLOUD_ROOT="/mnt/cloud-root"
-VM_STORAGE="/mnt/vm-storage"
 
 log() { echo "[SETUP] $*"; }
 
@@ -31,8 +30,8 @@ fi
 
 # 4. Directories
 mkdir -p "$MOUNT_DRIVE1" "$MOUNT_DRIVE2" /tmp/rclone-cache "$MOUNT_DRIVE1/minio-data" /var/lib/filebrowser
-mkdir -p "$CLOUD_ROOT/drive1" "$CLOUD_ROOT/drive2" "$CLOUD_ROOT/vm-space" "$VM_STORAGE"
-chmod 555 "$CLOUD_ROOT" "$CLOUD_ROOT/drive1" "$CLOUD_ROOT/drive2" "$CLOUD_ROOT/vm-space"
+mkdir -p "$CLOUD_ROOT"
+chmod 555 "$CLOUD_ROOT"
 
 if [ -f "$PROJECT_DIR/scripts/prepare-drives.sh" ] && [ -f "$PROJECT_DIR/config/drives.json" ]; then
     PROJECT_DIR="$PROJECT_DIR" bash "$PROJECT_DIR/scripts/prepare-drives.sh" --skip-marker-check
