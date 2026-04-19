@@ -2,6 +2,7 @@ services:
   minio:
     image: minio/minio:latest
     container_name: minio
+    init: true
     restart: unless-stopped
     ports:
       - "9000:9000"
@@ -16,7 +17,7 @@ services:
       - /bin/sh
       - -c
     command:
-      - test -f /mnt-check/.rclone-mounted && minio server /data --console-address ":9001"
+      - test -f /mnt-check/.rclone-mounted && exec minio server /data --console-address ":9001"
     healthcheck:
       test: ["CMD", "mc", "ready", "local"]
       interval: 30s
@@ -27,6 +28,7 @@ services:
   filebrowser:
     image: filebrowser/filebrowser:latest
     container_name: filebrowser
+    init: true
     restart: unless-stopped
     ports:
       - "8080:80"
@@ -42,7 +44,7 @@ services:
       - /bin/sh
       - -c
     command:
-      - test -f /mnt-check/.rclone-mounted && filebrowser
+      - test -f /mnt-check/.rclone-mounted && exec filebrowser
 
 volumes:
   filebrowser-db:

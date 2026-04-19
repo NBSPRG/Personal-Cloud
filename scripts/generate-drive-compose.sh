@@ -119,7 +119,7 @@ fi
     echo "    environment:"
     echo "      - FB_ROOT=/cloud"
     echo "    command:"
-    echo "      - ${marker_tests} && filebrowser"
+    echo "      - ${marker_tests} && exec filebrowser"
 } >> "${output_file}"
 
 echo "Generated ${output_file}"

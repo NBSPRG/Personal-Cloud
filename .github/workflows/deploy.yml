@@ -35,7 +35,12 @@ jobs:
 
             COMPOSE_FILES="-f docker-compose.yml -f docker-compose.generated-drives.yml"
 
-            docker compose $COMPOSE_FILES down --remove-orphans
+            docker compose $COMPOSE_FILES down --remove-orphans || {
+              echo "Compose down failed; restarting Docker to clear stuck containers"
+              sudo systemctl restart docker
+              sleep 10
+              docker compose $COMPOSE_FILES down --remove-orphans || true
+            }
             docker compose $COMPOSE_FILES up -d
 
             sleep 10
