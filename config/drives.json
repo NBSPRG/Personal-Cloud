@@ -12,7 +12,8 @@
       "required": true,
       "marker": "/mnt/drive1/.rclone-mounted",
       "kind": "rclone",
-      "rclone_remote": "gdrive1"
+      "rclone_remote": "gdrive1",
+      "rclone_type": "drive"
     },
     {
       "name": "drive2",
@@ -24,7 +25,8 @@
       "required": false,
       "marker": "/mnt/drive2/.rclone-mounted",
       "kind": "rclone",
-      "rclone_remote": "gdrive2"
+      "rclone_remote": "gdrive2",
+      "rclone_type": "drive"
     },
     {
       "name": "drive3",
@@ -36,7 +38,22 @@
       "required": false,
       "marker": "/mnt/drive3/.rclone-mounted",
       "kind": "rclone",
-      "rclone_remote": "gdrive3"
+      "rclone_remote": "gdrive3",
+      "rclone_type": "drive"
+    },
+    {
+      "name": "onedrive1",
+      "host_path": "/mnt/onedrive1",
+      "browser_path": "/cloud/onedrive1",
+      "mode": "rw",
+      "enabled_env": "ONEDRIVE1_ENABLED",
+      "default_enabled": false,
+      "required": false,
+      "marker": "/mnt/onedrive1/.rclone-mounted",
+      "kind": "rclone",
+      "rclone_remote": "onedrive1",
+      "rclone_type": "onedrive",
+      "vfs_cache_max_size": "5G"
     }
   ]
 }

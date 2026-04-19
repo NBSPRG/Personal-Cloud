@@ -43,16 +43,33 @@ fi
 
 mkdir -p "$(dirname "${RCLONE_CONFIG}")"
 
+rclone_type="$(jq -r '.rclone_type // "drive"' <<<"${drive}")"
+
 if ! rclone listremotes --config "${RCLONE_CONFIG}" | grep -qx "${rclone_remote}:"; then
     echo ""
-    echo "Authorizing Google Drive remote '${rclone_remote}'."
-    echo "Rclone will print a Google authorization URL. Open it, approve access, and paste the result if asked."
+    echo "Authorizing remote '${rclone_remote}' (type: ${rclone_type})."
+    echo "Rclone will print an authorization URL. Open it, approve access, and paste the result if asked."
     echo ""
 
-    if ! rclone config create "${rclone_remote}" drive scope drive --config "${RCLONE_CONFIG}"; then
+    case "${rclone_type}" in
+        drive)
+            rclone config create "${rclone_remote}" drive \
+                scope drive \
+                --config "${RCLONE_CONFIG}" || FALLBACK=true
+            ;;
+        onedrive)
+            rclone config create "${rclone_remote}" onedrive \
+                --config "${RCLONE_CONFIG}" || FALLBACK=true
+            ;;
+        *)
+            echo "Unknown rclone_type '${rclone_type}'. Run 'sudo rclone config' manually." >&2
+            exit 1
+            ;;
+    esac
+
+    if [ "${FALLBACK:-false}" = "true" ]; then
         echo ""
-        echo "Automatic rclone config did not complete."
-        echo "Fallback: run 'sudo rclone config' and create a Google Drive remote named '${rclone_remote}', then rerun this command."
+        echo "Automatic config failed. Run 'sudo rclone config' and create a remote named '${rclone_remote}', then rerun this command."
         exit 1
     fi
 fi
