@@ -1,0 +1,33 @@
+[Unit]
+Description=Rclone Mount - %i
+After=network-online.target
+Wants=network-online.target
+Documentation=https://rclone.org/commands/rclone_mount/
+
+[Service]
+Type=notify
+EnvironmentFile=/etc/rclone-mounts/%i.env
+ExecStartPre=/bin/mkdir -p ${MOUNT_DIR}
+ExecStartPre=/bin/mkdir -p /tmp/rclone-cache
+ExecStart=/usr/bin/rclone mount ${RCLONE_REMOTE} ${MOUNT_DIR} \
+    --config /root/.config/rclone/rclone.conf \
+    --allow-other \
+    --allow-non-empty \
+    --vfs-cache-mode full \
+    --vfs-cache-max-size ${VFS_CACHE_MAX_SIZE} \
+    --vfs-cache-max-age 72h \
+    --cache-dir /tmp/rclone-cache \
+    --vfs-read-chunk-size 64M \
+    --vfs-read-chunk-size-limit 512M \
+    --buffer-size 64M \
+    --dir-cache-time 72h \
+    --poll-interval 30s \
+    --log-file /var/log/rclone-%i.log \
+    --log-level INFO
+ExecStop=/bin/fusermount -uz ${MOUNT_DIR}
+Restart=on-failure
+RestartSec=10
+Environment=RCLONE_CONFIG=/root/.config/rclone/rclone.conf
+
+[Install]
+WantedBy=multi-user.target

@@ -203,37 +203,129 @@ Google Drive Account 2 (Cold — /mnt/drive2)
 └── redundancy/        ← mirror of drive1 critical data
 ```
 
-### Drive 2 Mode
+### Pluggable Drives
 
-By default, Drive 2 is backup-only:
-
-```env
-DRIVE2_NORMAL_MODE=false
-```
-
-In this mode, FileBrowser shows Drive 1, and the weekly backup job can sync
-important Drive 1 data into `gdrive2:redundancy`.
-
-To use Drive 2 as normal browsable storage, set this GitHub Actions secret:
+FileBrowser drives are generated from:
 
 ```text
-DRIVE2_NORMAL_MODE=true
+config/drives.json
 ```
 
-When enabled, deployment adds `docker-compose.drive2.yml`, FileBrowser root
-changes to `/cloud`, and the UI shows:
+Deployment writes `docker-compose.generated-drives.yml` from that config, then
+starts Docker Compose with the generated file. The `/cloud` folder itself is a
+read-only shell directory, so FileBrowser cannot upload to VM disk by accident.
+Only enabled drive mount folders are writable.
+
+Current flags:
+
+```env
+ENABLED_DRIVES=
+DRIVE1_ENABLED=true
+DRIVE2_NORMAL_MODE=false
+VM_STORAGE_READONLY_MODE=false
+```
+
+For new drives, prefer the scalable GitHub Actions secret:
+
+```text
+ENABLED_DRIVES=drive2,drive3,photos
+```
+
+GitHub Actions cannot automatically read brand-new secret names such as
+`DRIVE3_ENABLED` unless the workflow is edited to mention them. `ENABLED_DRIVES`
+keeps adding future drives plug-and-play.
+
+With defaults, FileBrowser shows:
+
+```text
+drive1/
+```
+
+With `DRIVE2_NORMAL_MODE=true`, FileBrowser shows:
 
 ```text
 drive1/
 drive2/
 ```
 
-The weekly Drive 1 to Drive 2 mirror is skipped while normal mode is enabled.
-Before enabling it, make sure both mount marker files exist on the VM:
+When Drive 2 normal mode is enabled, the weekly Drive 1 to Drive 2 mirror is
+skipped so normal Drive 2 files are not overwritten.
+
+With `VM_STORAGE_READONLY_MODE=true`, FileBrowser also shows:
+
+```text
+vm-readonly/
+```
+
+That maps to `/mnt/vm-storage` as read-only. FileBrowser can download files
+from it, but cannot upload into it.
+
+#### Add A New Google Drive
+
+1. Add a block to `config/drives.json`:
+
+```json
+{
+  "name": "drive3",
+  "host_path": "/mnt/drive3",
+  "browser_path": "/cloud/drive3",
+  "mode": "rw",
+  "enabled_env": "DRIVE3_ENABLED",
+  "default_enabled": false,
+  "required": false,
+  "marker": "/mnt/drive3/.rclone-mounted",
+  "kind": "rclone",
+  "rclone_remote": "gdrive3"
+}
+```
+
+2. Commit the config and add the drive name to the `ENABLED_DRIVES` GitHub Actions secret:
+
+```text
+ENABLED_DRIVES=drive3
+```
+
+3. Push to `main`.
+
+If the Google account has not been authorized yet, GitHub Actions will stop with
+a command like this:
 
 ```bash
-sudo touch /mnt/drive1/.rclone-mounted
-sudo touch /mnt/drive2/.rclone-mounted
+cd /opt/personal-cloud
+sudo PROJECT_DIR=/opt/personal-cloud bash scripts/setup-drive.sh drive3
+```
+
+Run that command once on the VM. It starts rclone authorization, prints the
+Google approval URL, installs the systemd mount, creates the mount marker, and
+regenerates FileBrowser mounts.
+
+The manual approval step is required because Google OAuth cannot be safely
+completed inside a non-interactive GitHub Actions deploy job.
+
+If you prefer doing the auth first, run:
+
+```bash
+sudo rclone config
+```
+
+Create the remote name used in config, for example:
+
+```text
+gdrive3
+```
+
+Then install and start the mount service:
+
+```bash
+cd /opt/personal-cloud
+sudo PROJECT_DIR=/opt/personal-cloud bash scripts/install-rclone-mount.sh drive3
+```
+
+4. Confirm the mount is real, then create the marker:
+
+```bash
+findmnt /mnt/drive3
+sudo touch /mnt/drive3/.rclone-mounted
 ```
 
 ---

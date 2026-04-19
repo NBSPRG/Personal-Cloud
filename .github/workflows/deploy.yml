@@ -24,12 +24,16 @@ jobs:
 
             echo "MINIO_ROOT_USER=${{ secrets.MINIO_ROOT_USER }}" > .env
             echo "MINIO_ROOT_PASSWORD=${{ secrets.MINIO_ROOT_PASSWORD }}" >> .env
+            echo "ENABLED_DRIVES=${{ secrets.ENABLED_DRIVES }}" >> .env
+            echo "DRIVE1_ENABLED=${{ secrets.DRIVE1_ENABLED }}" >> .env
             echo "DRIVE2_NORMAL_MODE=${{ secrets.DRIVE2_NORMAL_MODE }}" >> .env
+            echo "VM_STORAGE_READONLY_MODE=${{ secrets.VM_STORAGE_READONLY_MODE }}" >> .env
 
-            COMPOSE_FILES="-f docker-compose.yml"
-            if [ "${{ secrets.DRIVE2_NORMAL_MODE }}" = "true" ]; then
-              COMPOSE_FILES="$COMPOSE_FILES -f docker-compose.drive2.yml"
-            fi
+            sudo PROJECT_DIR=/opt/personal-cloud bash scripts/ensure-enabled-drives.sh
+            sudo PROJECT_DIR=/opt/personal-cloud bash scripts/prepare-drives.sh
+            PROJECT_DIR=/opt/personal-cloud bash scripts/generate-drive-compose.sh
+
+            COMPOSE_FILES="-f docker-compose.yml -f docker-compose.generated-drives.yml"
 
             docker compose $COMPOSE_FILES down --remove-orphans
             docker compose $COMPOSE_FILES up -d

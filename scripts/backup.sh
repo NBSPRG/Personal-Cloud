@@ -10,10 +10,7 @@ PROJECT_DIR="/opt/personal-cloud"
 DRIVE2_NORMAL_MODE="${DRIVE2_NORMAL_MODE:-false}"
 
 if [ -f "${PROJECT_DIR}/.env" ]; then
-    # Load deployment flags such as DRIVE2_NORMAL_MODE for cron runs.
-    set -a
-    . "${PROJECT_DIR}/.env"
-    set +a
+    DRIVE2_NORMAL_MODE="$(grep -E "^DRIVE2_NORMAL_MODE=" "${PROJECT_DIR}/.env" | tail -n 1 | cut -d= -f2- || echo "${DRIVE2_NORMAL_MODE}")"
 fi
 
 log() { echo "[$(date '+%Y-%m-%d %H:%M:%S')] $*" | tee -a "$LOG_FILE"; }

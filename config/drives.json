@@ -1,0 +1,40 @@
+{
+  "cloud_root": "/mnt/cloud-root",
+  "generated_compose": "docker-compose.generated-drives.yml",
+  "drives": [
+    {
+      "name": "drive1",
+      "host_path": "/mnt/drive1",
+      "browser_path": "/cloud/drive1",
+      "mode": "rw",
+      "enabled_env": "DRIVE1_ENABLED",
+      "default_enabled": true,
+      "required": true,
+      "marker": "/mnt/drive1/.rclone-mounted",
+      "kind": "rclone",
+      "rclone_remote": "gdrive1"
+    },
+    {
+      "name": "drive2",
+      "host_path": "/mnt/drive2",
+      "browser_path": "/cloud/drive2",
+      "mode": "rw",
+      "enabled_env": "DRIVE2_NORMAL_MODE",
+      "default_enabled": false,
+      "required": false,
+      "marker": "/mnt/drive2/.rclone-mounted",
+      "kind": "rclone",
+      "rclone_remote": "gdrive2"
+    },
+    {
+      "name": "vm-readonly",
+      "host_path": "/mnt/vm-storage",
+      "browser_path": "/cloud/vm-readonly",
+      "mode": "ro",
+      "enabled_env": "VM_STORAGE_READONLY_MODE",
+      "default_enabled": false,
+      "required": false,
+      "kind": "local"
+    }
+  ]
+}

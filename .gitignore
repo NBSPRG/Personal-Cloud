@@ -11,3 +11,4 @@ __pycache__/
 *.tmp
 *.swp
 data/
+docker-compose.generated-drives.yml
