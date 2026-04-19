@@ -1,0 +1,10 @@
+# Local dev override — swaps Rclone mounts for local ./data directory
+services:
+  minio:
+    volumes:
+      - ./data/minio-data:/data
+
+  filebrowser:
+    volumes:
+      - ./data:/srv
+      - filebrowser-db:/database

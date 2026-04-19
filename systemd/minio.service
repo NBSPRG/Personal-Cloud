@@ -1,0 +1,25 @@
+[Unit]
+Description=MinIO S3-Compatible Object Storage
+After=network-online.target rclone-drive1.service
+Wants=network-online.target
+Requires=rclone-drive1.service
+Documentation=https://min.io/docs/minio/linux/index.html
+
+[Service]
+Type=simple
+User=root
+Group=root
+EnvironmentFile=/etc/default/minio
+ExecStart=/usr/local/bin/minio server /mnt/drive1/minio-data \
+    --address ":9000" \
+    --console-address ":9001"
+Restart=on-failure
+RestartSec=10
+LimitNOFILE=65536
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

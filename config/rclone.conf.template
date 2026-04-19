@@ -1,0 +1,20 @@
+# Run `rclone config` on the VM to generate real values.
+# Create two remotes: gdrive1 (hot storage) and gdrive2 (cold/backups).
+
+[gdrive1]
+type = drive
+client_id =
+client_secret =
+scope = drive
+token = {"access_token":"xxx","token_type":"Bearer","refresh_token":"xxx","expiry":"2026-01-01T00:00:00.000Z"}
+root_folder_id =
+team_drive =
+
+[gdrive2]
+type = drive
+client_id =
+client_secret =
+scope = drive
+token = {"access_token":"xxx","token_type":"Bearer","refresh_token":"xxx","expiry":"2026-01-01T00:00:00.000Z"}
+root_folder_id =
+team_drive =

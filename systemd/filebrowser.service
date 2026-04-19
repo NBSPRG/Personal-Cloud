@@ -1,0 +1,22 @@
+[Unit]
+Description=FileBrowser — Web File Manager
+After=network-online.target rclone-drive1.service
+Wants=network-online.target
+Requires=rclone-drive1.service
+Documentation=https://filebrowser.org/
+
+[Service]
+Type=simple
+User=root
+Group=root
+ExecStart=/usr/local/bin/filebrowser \
+    --root /mnt/drive1 \
+    --address 0.0.0.0 \
+    --port 8080 \
+    --database /var/lib/filebrowser/filebrowser.db \
+    --log /var/log/filebrowser.log
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,32 @@
+[Unit]
+Description=Rclone Mount — Google Drive 1 (Hot Storage)
+After=network-online.target
+Wants=network-online.target
+Documentation=https://rclone.org/commands/rclone_mount/
+
+[Service]
+Type=notify
+ExecStartPre=/bin/mkdir -p /mnt/drive1
+ExecStartPre=/bin/mkdir -p /tmp/rclone-cache
+ExecStart=/usr/bin/rclone mount gdrive1: /mnt/drive1 \
+    --config /root/.config/rclone/rclone.conf \
+    --allow-other \
+    --allow-non-empty \
+    --vfs-cache-mode full \
+    --vfs-cache-max-size 5G \
+    --vfs-cache-max-age 72h \
+    --cache-dir /tmp/rclone-cache \
+    --vfs-read-chunk-size 64M \
+    --vfs-read-chunk-size-limit 512M \
+    --buffer-size 64M \
+    --dir-cache-time 72h \
+    --poll-interval 15s \
+    --log-file /var/log/rclone-drive1.log \
+    --log-level INFO
+ExecStop=/bin/fusermount -uz /mnt/drive1
+Restart=on-failure
+RestartSec=10
+Environment=RCLONE_CONFIG=/root/.config/rclone/rclone.conf
+
+[Install]
+WantedBy=multi-user.target
