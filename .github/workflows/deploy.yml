@@ -14,7 +14,7 @@ jobs:
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.AZURE_VM_IP }}
-          username: azureuser
+          username: NBSPRG
           key: ${{ secrets.AZURE_SSH_KEY }}
           script: |
             set -e

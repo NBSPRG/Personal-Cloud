@@ -18,7 +18,7 @@ if ! command -v docker &>/dev/null; then
     curl -fsSL https://get.docker.com | sh
     systemctl enable docker
     systemctl start docker
-    usermod -aG docker azureuser
+    usermod -aG docker NBSPRG
 fi
 
 # 3. Rclone
