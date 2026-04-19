@@ -57,7 +57,7 @@ if ! rclone listremotes --config "${RCLONE_CONFIG}" | grep -qx "${rclone_remote}
     fi
 fi
 
-PROJECT_DIR="${PROJECT_DIR}" bash "${PROJECT_DIR}/scripts/install-rclone-mount.sh" "${DRIVE_NAME}"
+sudo PROJECT_DIR="${PROJECT_DIR}" bash "${PROJECT_DIR}/scripts/install-rclone-mount.sh" "${DRIVE_NAME}"
 sleep 5
 
 if ! findmnt "${host_path}" >/dev/null 2>&1; then

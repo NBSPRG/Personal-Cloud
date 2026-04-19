@@ -51,9 +51,9 @@ MOUNT_DIR=${host_path}
 VFS_CACHE_MAX_SIZE=${cache_size}
 EOF
 
-cp "${PROJECT_DIR}/systemd/rclone-drive@.service" /etc/systemd/system/rclone-drive@.service
-systemctl daemon-reload
-systemctl enable --now "rclone-drive@${DRIVE_NAME}.service"
+sudo cp "${PROJECT_DIR}/systemd/rclone-drive@.service" /etc/systemd/system/rclone-drive@.service
+sudo systemctl daemon-reload
+sudo systemctl enable --now "rclone-drive@${DRIVE_NAME}.service"
 
 echo "Installed and started rclone-drive@${DRIVE_NAME}.service"
 echo "After confirming the mount, create the marker:"

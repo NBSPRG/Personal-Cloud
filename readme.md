@@ -250,6 +250,14 @@ drive2/
 When Drive 2 normal mode is enabled, the weekly Drive 1 to Drive 2 mirror is
 skipped so normal Drive 2 files are not overwritten.
 
+### FileBrowser Healthcheck
+
+The Docker image includes its own default healthcheck, but this project
+configures FileBrowser with environment variables instead of
+`/config/settings.json`. The Compose file overrides the image check with an HTTP
+probe against FileBrowser itself, so a missing `/config/settings.json` should
+not mark the container unhealthy.
+
 #### Add A New Google Drive
 
 1. Add a block to `config/drives.json`:
